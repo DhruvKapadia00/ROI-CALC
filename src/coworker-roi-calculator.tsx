@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { TrendingUp, Clock, DollarSign, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 
 export default function CoworkerROICalculator() {
@@ -24,7 +24,7 @@ export default function CoworkerROICalculator() {
     { id: 'zoom', name: 'Zoom/Meet', color: 'bg-indigo-100 border-indigo-300 hover:border-indigo-400' }
   ];
 
-  const toggleConnector = (connectorId) => {
+  const toggleConnector = (connectorId: string) => {
     setSelectedConnectors(prev => 
       prev.includes(connectorId) 
         ? prev.filter(id => id !== connectorId)
@@ -34,7 +34,7 @@ export default function CoworkerROICalculator() {
 
   const numApps = selectedConnectors.length;
 
-  const industryRates = {
+  const industryRates: { [key: string]: number } = {
     'SaaS': 65,
     'FinTech': 75,
     'E-commerce': 55,
@@ -69,7 +69,6 @@ export default function CoworkerROICalculator() {
   };
 
   const hourlyRate = industryRates[industry];
-  const adoptionRate = 1.0;
   const activeUsers = employeeCount;
   const minutesPerInteraction = getMinutesPerInteraction();
   const dailyInteractions = getDailyInteractions();
@@ -81,8 +80,6 @@ export default function CoworkerROICalculator() {
   const monthlyCost = activeUsers * 30;
   const monthlyROI = monthlyValue - monthlyCost;
 
-  const annualValue = monthlyValue * 12;
-  const annualCost = monthlyCost * 12;
   const annualROI = monthlyROI * 12;
   const roiMultiple = monthlyCost > 0 ? (monthlyValue / monthlyCost) : 0;
   const paybackDays = monthlyCost > 0 ? Math.round((monthlyCost / monthlyROI) * 30) : 0;
@@ -111,7 +108,7 @@ export default function CoworkerROICalculator() {
     return () => clearInterval(timer);
   }, [monthlyROI]);
 
-  const formatCurrency = (value) => {
+  const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -120,7 +117,7 @@ export default function CoworkerROICalculator() {
     }).format(value);
   };
 
-  const formatNumber = (value) => {
+  const formatNumber = (value: number) => {
     return new Intl.NumberFormat('en-US').format(Math.round(value));
   };
 
