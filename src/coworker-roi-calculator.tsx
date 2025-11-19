@@ -1,5 +1,29 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp, Clock, DollarSign, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { TrendingUp, Clock, DollarSign, ChevronDown, ChevronUp, Sparkles, Info } from 'lucide-react';
+
+// Tooltip component for field definitions
+const Tooltip = ({ text }: { text: string }) => {
+  const [show, setShow] = useState(false);
+  
+  return (
+    <div className="relative inline-block ml-1">
+      <button
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onClick={() => setShow(!show)}
+        className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 transition-colors"
+        type="button"
+      >
+        <Info className="w-3 h-3 text-slate-600" />
+      </button>
+      {show && (
+        <div className="absolute z-10 w-64 p-3 text-sm text-slate-700 bg-white border border-slate-200 rounded-lg shadow-lg -top-2 left-6">
+          {text}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function CoworkerROICalculator() {
   const [employeeCount, setEmployeeCount] = useState(100);
@@ -122,227 +146,252 @@ export default function CoworkerROICalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4">
-      <div className="max-w-6xl mx-auto space-y-4">
+    <div className="min-h-screen bg-slate-50 p-2 sm:p-4">
+      <div className="max-w-7xl mx-auto space-y-3 sm:space-y-4">
         
-        <div className="text-center mb-4">
-          <h1 className="text-5xl font-bold text-slate-900 mb-2">
-            ROI Calculator
-          </h1>
-          <p className="text-lg text-slate-600">Conservative estimates based on real-world usage</p>
+        <div className="text-center mb-3 sm:mb-4">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2">
+            <img src="/logo.svg" alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16" />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900">
+              ROI Calculator
+            </h1>
+          </div>
+          <p className="text-sm sm:text-base md:text-lg text-slate-600 px-2">Based on customer implementation data</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
-          <div className="space-y-4">
-            
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Industry</label>
-              <select
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
-                className="w-full px-3 py-2 text-base border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none bg-white transition-all text-slate-900"
-              >
-                <option>SaaS</option>
-                <option>FinTech</option>
-                <option>E-commerce</option>
-                <option>Gaming</option>
-                <option>Healthcare Tech</option>
-                <option>Other</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Number of employees</label>
-              <div className="flex items-center gap-3">
-                <input
-                  type="range"
-                  min="10"
-                  max="1000"
-                  step="10"
-                  value={employeeCount}
-                  onChange={(e) => setEmployeeCount(Number(e.target.value))}
-                  className="flex-1 h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-emerald-500"
-                  style={{
-                    background: `linear-gradient(to right, #2DD4A3 0%, #2DD4A3 ${((employeeCount - 10) / 990) * 100}%, #e2e8f0 ${((employeeCount - 10) / 990) * 100}%, #e2e8f0 100%)`
-                  }}
-                />
-                <span className="text-lg font-semibold text-slate-900 min-w-[50px] text-right">{employeeCount}</span>
+        {/* Two-column layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+          
+          {/* LEFT COLUMN - Inputs */}
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 border border-slate-200 h-fit">
+            <h2 className="text-lg sm:text-xl font-semibold text-slate-900 mb-3 sm:mb-4">Configure Your Inputs</h2>
+            <div className="space-y-3 sm:space-y-4">
+              
+              <div>
+                <label className="flex items-center text-sm font-medium text-slate-700 mb-2">
+                  Industry
+                  <Tooltip text="Your industry determines the average hourly rate used in calculations. Different industries have different labor costs, which impacts the dollar value of time saved." />
+                </label>
+                <select
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                  className="w-full px-3 py-2 text-base border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none bg-white transition-all text-slate-900"
+                >
+                  <option>SaaS</option>
+                  <option>FinTech</option>
+                  <option>E-commerce</option>
+                  <option>Gaming</option>
+                  <option>Healthcare Tech</option>
+                  <option>Other</option>
+                </select>
+                <p className="text-xs text-slate-500 mt-1">Hourly rate: ${hourlyRate}/hr</p>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">How many AI searchs per day</label>
-              <div className="flex items-center gap-3">
-                <input
-                  type="range"
-                  min="1"
-                  max="15"
-                  value={searchFrequency}
-                  onChange={(e) => setSearchFrequency(Number(e.target.value))}
-                  className="flex-1 h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-emerald-500"
-                  style={{
-                    background: `linear-gradient(to right, #2DD4A3 0%, #2DD4A3 ${((searchFrequency - 1) / 14) * 100}%, #e2e8f0 ${((searchFrequency - 1) / 14) * 100}%, #e2e8f0 100%)`
-                  }}
-                />
-                <span className="text-lg font-semibold text-slate-900 min-w-[50px] text-right">{searchFrequency}</span>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Connectors ({numApps} selected)</label>
-              <div className="border border-slate-200 rounded-lg p-3 bg-white">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {connectors.map(connector => (
-                    <label key={connector.id} className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-2 rounded">
-                      <input
-                        type="checkbox"
-                        checked={selectedConnectors.includes(connector.id)}
-                        onChange={() => toggleConnector(connector.id)}
-                        className="w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500"
-                      />
-                      <span className="text-sm text-slate-900">{connector.name}</span>
-                    </label>
-                  ))}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Number of employees</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="10"
+                    max="1000"
+                    step="10"
+                    value={employeeCount}
+                    onChange={(e) => setEmployeeCount(Number(e.target.value))}
+                    className="flex-1 h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-emerald-500"
+                    style={{
+                      background: `linear-gradient(to right, #2DD4A3 0%, #2DD4A3 ${((employeeCount - 10) / 990) * 100}%, #e2e8f0 ${((employeeCount - 10) / 990) * 100}%, #e2e8f0 100%)`
+                    }}
+                  />
+                  <span className="text-lg font-semibold text-slate-900 min-w-[50px] text-right">{employeeCount}</span>
                 </div>
               </div>
+
+              <div>
+                <label className="flex items-center text-sm font-medium text-slate-700 mb-2">
+                  Primary team type
+                  <Tooltip text="Different teams have different work patterns. Engineering teams typically spend more time on technical searches and documentation, while sales teams focus on customer information. This affects the average time saved per interaction." />
+                </label>
+                <select
+                  value={teamType}
+                  onChange={(e) => setTeamType(e.target.value)}
+                  className="w-full px-3 py-2 text-base border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none bg-white transition-all text-slate-900"
+                >
+                  <option value="mixed">Mixed teams</option>
+                  <option value="engineering">Engineering</option>
+                  <option value="sales-cs">Customer Success</option>
+                  <option value="sales">Sales</option>
+                </select>
+                <p className="text-xs text-slate-500 mt-1">Impacts time saved per interaction</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">How many AI searches per day</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="1"
+                    max="15"
+                    value={searchFrequency}
+                    onChange={(e) => setSearchFrequency(Number(e.target.value))}
+                    className="flex-1 h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-emerald-500"
+                    style={{
+                      background: `linear-gradient(to right, #2DD4A3 0%, #2DD4A3 ${((searchFrequency - 1) / 14) * 100}%, #e2e8f0 ${((searchFrequency - 1) / 14) * 100}%, #e2e8f0 100%)`
+                    }}
+                  />
+                  <span className="text-lg font-semibold text-slate-900 min-w-[50px] text-right">{searchFrequency}</span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">Primary driver of ROI calculation</p>
+              </div>
+
+              <div>
+                <label className="flex items-center text-sm font-medium text-slate-700 mb-2">
+                  Connectors ({numApps} selected)
+                  <Tooltip text="More connected apps means Coworker can search across more of your company's knowledge. Each additional connector increases the breadth of information available and slightly increases time saved per search." />
+                </label>
+                <div className="border border-slate-200 rounded-lg p-3 bg-white">
+                  <div className="grid grid-cols-2 gap-2">
+                    {connectors.map(connector => (
+                      <label key={connector.id} className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-2 rounded">
+                        <input
+                          type="checkbox"
+                          checked={selectedConnectors.includes(connector.id)}
+                          onChange={() => toggleConnector(connector.id)}
+                          className="w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500"
+                        />
+                        <span className="text-sm text-slate-900">{connector.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Meeting frequency</label>
+                <select
+                  value={meetingFrequency}
+                  onChange={(e) => setMeetingFrequency(e.target.value)}
+                  className="w-full px-3 py-2 text-base border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none bg-white transition-all text-slate-900"
+                >
+                  <option value="low">Low (1-2/day)</option>
+                  <option value="medium">Medium (4-6/day)</option>
+                  <option value="high">High (8+/day)</option>
+                </select>
+                <p className="text-xs text-slate-500 mt-1">Adds meeting-related interactions to daily usage</p>
+              </div>
+
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN - ROI Display */}
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 border border-slate-200 h-fit lg:sticky lg:top-4">
+            <div className="text-center mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-slate-100">
+              <div className="text-xs sm:text-sm font-medium text-slate-600 mb-2">NET MONTHLY ROI</div>
+              <div className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent mb-2">
+                {formatCurrency(animatedMonthly)}
+              </div>
+              <div className="text-sm text-slate-600">
+                <span className="font-semibold text-emerald-600">{formatCurrency(annualROI)}/year</span>
+              </div>
+              <div className="text-xs text-slate-500 mt-2">
+                {formatCurrency(monthlyValue)} value - {formatCurrency(monthlyCost)} cost
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Meeting frequency</label>
-              <select
-                value={meetingFrequency}
-                onChange={(e) => setMeetingFrequency(e.target.value)}
-                className="w-full px-3 py-2 text-base border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none bg-white transition-all text-slate-900"
-              >
-                <option value="low">Low (1-2/day)</option>
-                <option value="medium">Medium (4-6/day)</option>
-                <option value="high">High (8+/day)</option>
-              </select>
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="text-center p-2 sm:p-3 rounded-lg sm:rounded-xl bg-slate-50 border border-slate-100">
+                <div className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 rounded-lg mb-1 sm:mb-2">
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+                </div>
+                <div className="text-xl sm:text-2xl font-bold text-slate-900">{roiMultiple.toFixed(1)}x</div>
+                <div className="text-[10px] sm:text-xs text-slate-600">ROI Multiple</div>
+              </div>
+
+              <div className="text-center p-2 sm:p-3 rounded-lg sm:rounded-xl bg-slate-50 border border-slate-100">
+                <div className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 rounded-lg mb-1 sm:mb-2">
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+                </div>
+                <div className="text-xl sm:text-2xl font-bold text-slate-900">{paybackDays}</div>
+                <div className="text-[10px] sm:text-xs text-slate-600">Days to Payback</div>
+              </div>
+
+              <div className="text-center p-2 sm:p-3 rounded-lg sm:rounded-xl bg-slate-50 border border-slate-100">
+                <div className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 rounded-lg mb-1 sm:mb-2">
+                  <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+                </div>
+                <div className="text-xl sm:text-2xl font-bold text-slate-900">{activeUsers}</div>
+                <div className="text-[10px] sm:text-xs text-slate-600">Active Users</div>
+              </div>
+
+              <div className="text-center p-2 sm:p-3 rounded-lg sm:rounded-xl bg-slate-50 border border-slate-100">
+                <div className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 rounded-lg mb-1 sm:mb-2">
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+                </div>
+                <div className="text-xl sm:text-2xl font-bold text-slate-900">{weeklyHoursPerUser}</div>
+                <div className="text-[10px] sm:text-xs text-slate-600">Hrs/Week per User</div>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Primary team type</label>
-              <select
-                value={teamType}
-                onChange={(e) => setTeamType(e.target.value)}
-                className="w-full px-3 py-2 text-base border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-transparent outline-none bg-white transition-all text-slate-900"
-              >
-                <option value="mixed">Mixed teams</option>
-                <option value="engineering">Engineering</option>
-                <option value="sales-cs">Customer Success</option>
-                <option value="sales">Sales</option>
-              </select>
+          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-emerald-100 mb-3 sm:mb-4">
+            <h3 className="font-semibold text-slate-900 mb-2 sm:mb-3 text-center text-sm sm:text-base">Monthly Breakdown</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-emerald-100">
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">Total Interactions</div>
+                <div className="text-lg sm:text-xl font-bold text-slate-900">{formatNumber(monthlyInteractions)}</div>
+                <div className="text-[10px] sm:text-xs text-slate-500 mt-1">{dailyInteractions.toFixed(1)}/user/day</div>
+              </div>
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-emerald-100">
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">Time Saved</div>
+                <div className="text-lg sm:text-xl font-bold text-slate-900">{minutesPerInteraction.toFixed(1)} min</div>
+                <div className="text-[10px] sm:text-xs text-slate-500 mt-1">Per interaction</div>
+              </div>
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-emerald-100">
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">Hours Saved</div>
+                <div className="text-lg sm:text-xl font-bold text-slate-900">{formatNumber(monthlyHours)}</div>
+                <div className="text-[10px] sm:text-xs text-slate-500 mt-1">Monthly total</div>
+              </div>
+              <div className="bg-white rounded-lg p-2 sm:p-3 border border-emerald-100">
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">Per Employee</div>
+                <div className="text-lg sm:text-xl font-bold text-slate-900">{formatCurrency(weeklySavingsPerEmployee)}</div>
+                <div className="text-[10px] sm:text-xs text-slate-500 mt-1">Weekly savings</div>
+              </div>
             </div>
+          </div>
 
+          <div className="bg-slate-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-slate-200 mb-3 sm:mb-4">
+            <div className="flex flex-col sm:flex-row sm:justify-around gap-3 sm:gap-4 text-center">
+              <div className="flex-1">
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">Hourly Rate</div>
+                <div className="text-lg sm:text-xl font-bold text-slate-900">${hourlyRate}/hr</div>
+                <div className="text-[10px] sm:text-xs text-slate-500">{industry} average</div>
+              </div>
+              <div className="flex-1">
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">Coworker Cost</div>
+                <div className="text-lg sm:text-xl font-bold text-slate-900">{formatCurrency(monthlyCost)}/mo</div>
+                <div className="text-[10px] sm:text-xs text-slate-500">$30/user × {activeUsers} users</div>
+              </div>
+              <div className="flex-1">
+                <div className="text-xs sm:text-sm text-slate-600 mb-1">Annual Savings</div>
+                <div className="text-lg sm:text-xl font-bold text-emerald-600">{formatCurrency(annualSavingsPerEmployee)}</div>
+                <div className="text-[10px] sm:text-xs text-slate-500">Per employee/year</div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
-          
-          <div className="text-center mb-6 pb-6 border-b border-slate-100">
-            <div className="text-sm font-medium text-slate-600 mb-2">NET MONTHLY ROI</div>
-            <div className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent mb-2">
-              {formatCurrency(animatedMonthly)}
-            </div>
-            <div className="text-base text-slate-600">
-              <span className="font-semibold text-emerald-600">{formatCurrency(annualROI)}/year</span> • From {formatCurrency(monthlyValue)} value - {formatCurrency(monthlyCost)} cost
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-            <div className="text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-emerald-100 rounded-lg mb-2">
-                <TrendingUp className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div className="text-2xl font-bold text-slate-900">{roiMultiple.toFixed(1)}x</div>
-              <div className="text-sm text-slate-600">ROI Multiple</div>
-            </div>
-
-            <div className="text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-emerald-100 rounded-lg mb-2">
-                <Clock className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div className="text-2xl font-bold text-slate-900">{paybackDays}</div>
-              <div className="text-sm text-slate-600">Days to Payback</div>
-            </div>
-
-            <div className="text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-emerald-100 rounded-lg mb-2">
-                <DollarSign className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div className="text-2xl font-bold text-slate-900">{activeUsers}</div>
-              <div className="text-sm text-slate-600">Active Users</div>
-            </div>
-
-            <div className="text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-emerald-100 rounded-lg mb-2">
-                <Sparkles className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div className="text-2xl font-bold text-slate-900">{weeklyHoursPerUser}</div>
-              <div className="text-sm text-slate-600">Hrs/Week per User</div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-100 mb-4">
-            <h3 className="font-semibold text-slate-900 mb-3 text-center text-base">Monthly Breakdown</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-              <div className="bg-white rounded-lg p-3 border border-emerald-100">
-                <div className="text-sm text-slate-600 mb-1">Total Interactions</div>
-                <div className="text-xl font-bold text-slate-900">{formatNumber(monthlyInteractions)}</div>
-                <div className="text-xs text-slate-500 mt-1">{dailyInteractions.toFixed(1)}/user/day</div>
-              </div>
-              <div className="bg-white rounded-lg p-3 border border-emerald-100">
-                <div className="text-sm text-slate-600 mb-1">Time Saved</div>
-                <div className="text-xl font-bold text-slate-900">{minutesPerInteraction.toFixed(1)} min</div>
-                <div className="text-xs text-slate-500 mt-1">Per interaction</div>
-              </div>
-              <div className="bg-white rounded-lg p-3 border border-emerald-100">
-                <div className="text-sm text-slate-600 mb-1">Hours Saved</div>
-                <div className="text-xl font-bold text-slate-900">{formatNumber(monthlyHours)}</div>
-                <div className="text-xs text-slate-500 mt-1">Monthly total</div>
-              </div>
-              <div className="bg-white rounded-lg p-3 border border-emerald-100">
-                <div className="text-sm text-slate-600 mb-1">Per Employee</div>
-                <div className="text-xl font-bold text-slate-900">{formatCurrency(weeklySavingsPerEmployee)}</div>
-                <div className="text-xs text-slate-500 mt-1">Weekly savings</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 mb-4">
-            <div className="flex flex-col sm:flex-row sm:justify-around gap-4 text-center">
-              <div className="flex-1">
-                <div className="text-sm text-slate-600 mb-1">Hourly Rate</div>
-                <div className="text-xl font-bold text-slate-900">${hourlyRate}/hr</div>
-                <div className="text-xs text-slate-500">{industry} average</div>
-              </div>
-              <div className="flex-1">
-                <div className="text-sm text-slate-600 mb-1">Coworker Cost</div>
-                <div className="text-xl font-bold text-slate-900">{formatCurrency(monthlyCost)}/mo</div>
-                <div className="text-xs text-slate-500">$30/user × {activeUsers} users</div>
-              </div>
-              <div className="flex-1">
-                <div className="text-sm text-slate-600 mb-1">Annual Savings</div>
-                <div className="text-xl font-bold text-emerald-600">{formatCurrency(annualSavingsPerEmployee)}</div>
-                <div className="text-xs text-slate-500">Per employee/year</div>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
+            className="w-full px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
           >
-            <h3 className="text-base font-semibold text-slate-900">How is this calculated?</h3>
-            {showDetails ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
+            <h3 className="text-sm sm:text-base font-semibold text-slate-900">How is this calculated?</h3>
+            {showDetails ? <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" /> : <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />}
           </button>
 
           {showDetails && (
-            <div className="px-6 pb-6 space-y-3">
-              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                <div className="text-sm text-slate-700 space-y-2">
+            <div className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-3">
+              <div className="bg-emerald-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-emerald-100">
+                <div className="text-xs sm:text-sm text-slate-700 space-y-2">
                   <p><strong>Active Users:</strong> {employeeCount} employees = {activeUsers} users</p>
                   
                   <p className="pt-2"><strong>Daily Interactions:</strong> {dailyInteractions.toFixed(1)} per user/day</p>
@@ -360,18 +409,18 @@ export default function CoworkerROICalculator() {
                 </div>
               </div>
 
-              <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
-                <div className="space-y-2 text-sm text-slate-700">
+              <div className="bg-blue-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-200">
+                <div className="space-y-2 text-xs sm:text-sm text-slate-700">
                   <p><strong>{formatCurrency(weeklySavingsPerEmployee)}/week per employee</strong> in time savings is very realistic - that's just {weeklyHoursPerUser} hours/week.</p>
                   <p><strong>{minutesPerInteraction.toFixed(1)} minutes saved</strong> per interaction is a conservative estimate based on actual customer data.</p>
                   <p><strong>{dailyInteractions.toFixed(1)} interactions/day</strong> is reasonable usage - not assuming everyone uses it constantly.</p>
-                  <p className="pt-2 text-emerald-700 font-semibold">Even with these conservative assumptions, you get a {roiMultiple.toFixed(1)}x return on investment.</p>
+                  <p className="pt-1 text-emerald-700 font-semibold">Even with these conservative assumptions, you get a {roiMultiple.toFixed(1)}x return on investment.</p>
                 </div>
               </div>
 
-              <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
-                <p className="font-semibold text-slate-900 mb-2 text-sm">Your Results May Vary</p>
-                <p className="text-sm text-slate-700">
+              <div className="bg-amber-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-amber-200">
+                <p className="font-semibold text-slate-900 mb-2 text-xs sm:text-sm">Your Results May Vary</p>
+                <p className="text-xs sm:text-sm text-slate-700">
                   These calculations use conservative industry benchmarks. Many teams see greater time savings (10-15 min per interaction) as Coworker becomes integrated into daily workflows. We prefer to under-promise and over-deliver.
                 </p>
               </div>
