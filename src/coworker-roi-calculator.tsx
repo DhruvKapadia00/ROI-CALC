@@ -146,7 +146,7 @@ export default function CoworkerROICalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-2 sm:p-4">
+    <div className="min-h-screen p-2 sm:p-4" style={{ backgroundColor: '#F7F6F7' }}>
       <div className="max-w-7xl mx-auto space-y-3 sm:space-y-4">
         
         <div className="text-center mb-3 sm:mb-4">
