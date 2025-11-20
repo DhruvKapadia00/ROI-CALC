@@ -2,8 +2,12 @@ import { useState, useEffect } from 'react';
 import { TrendingUp, Clock, DollarSign, ChevronDown, ChevronUp, Sparkles, Info } from 'lucide-react';
 
 // Tooltip component for field definitions
-const Tooltip = ({ text }: { text: string }) => {
+const Tooltip = ({ text, position = 'right' }: { text: string; position?: 'left' | 'right' }) => {
   const [show, setShow] = useState(false);
+  
+  const positionClasses = position === 'left' 
+    ? 'right-6 -top-2' 
+    : 'left-6 -top-2';
   
   return (
     <div className="relative inline-block ml-1">
@@ -17,7 +21,7 @@ const Tooltip = ({ text }: { text: string }) => {
         <Info className="w-3 h-3 text-slate-600" />
       </button>
       {show && (
-        <div className="absolute z-10 w-64 p-3 text-sm text-slate-700 bg-white border border-slate-200 rounded-lg shadow-lg -top-2 left-6">
+        <div className={`absolute z-10 w-64 p-3 text-sm text-slate-700 bg-white border border-slate-200 rounded-lg shadow-lg ${positionClasses}`}>
           {text}
         </div>
       )}
@@ -106,7 +110,7 @@ export default function CoworkerROICalculator() {
 
   const annualROI = monthlyROI * 12;
   const roiMultiple = monthlyCost > 0 ? (monthlyValue / monthlyCost) : 0;
-  const paybackDays = monthlyCost > 0 ? Math.round((monthlyCost / monthlyROI) * 30) : 0;
+  const paybackDays = (monthlyCost > 0 && monthlyROI > 0) ? Math.round((monthlyCost / monthlyROI) * 30.44) : 0;
 
   const weeklyMinutesPerUser = dailyInteractions * minutesPerInteraction * 5;
   const weeklyHoursPerUser = (weeklyMinutesPerUser / 60).toFixed(1);
@@ -246,7 +250,7 @@ export default function CoworkerROICalculator() {
               <div>
                 <label className="flex items-center text-sm font-medium text-slate-700 mb-2">
                   Connectors ({numApps} selected)
-                  <Tooltip text="More connected apps means Coworker can search across more of your company's knowledge. Each additional connector increases the breadth of information available and slightly increases time saved per search." />
+                  <Tooltip text="More connected apps means Coworker can search across more of your company's knowledge. Each connector beyond 3 adds a 3% boost to time saved per interaction because employees spend less time switching between apps and can find information faster in one place." />
                 </label>
                 <div className="border border-slate-200 rounded-lg p-3 bg-white">
                   <div className="grid grid-cols-2 gap-2">
@@ -263,6 +267,9 @@ export default function CoworkerROICalculator() {
                     ))}
                   </div>
                 </div>
+                <p className="text-xs text-slate-500 mt-1">
+                  {numApps > 3 ? `+${((numApps - 3) * 3).toFixed(0)}% time boost from ${numApps - 3} extra connector${numApps - 3 > 1 ? 's' : ''}` : 'Select 4+ connectors for time savings boost'}
+                </p>
               </div>
 
               <div>
@@ -311,7 +318,10 @@ export default function CoworkerROICalculator() {
                   <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
                 </div>
                 <div className="text-xl sm:text-2xl font-bold text-slate-900">{paybackDays}</div>
-                <div className="text-[10px] sm:text-xs text-slate-600">Days to Payback</div>
+                <div className="flex items-center justify-center text-[10px] sm:text-xs text-slate-600">
+                  Days to Payback
+                  <Tooltip text="The number of days it takes for the time savings to equal the cost of Coworker. After this point, you're generating pure profit. Calculated as: (Monthly Cost ÷ Net Monthly Savings) × 30.44 days." position="left" />
+                </div>
               </div>
 
               <div className="text-center p-2 sm:p-3 rounded-lg sm:rounded-xl bg-slate-50 border border-slate-100">
