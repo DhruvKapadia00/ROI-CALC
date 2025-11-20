@@ -34,7 +34,7 @@ export default function CoworkerROICalculator() {
   const [selectedConnectors, setSelectedConnectors] = useState(['slack', 'notion', 'github']);
   const [industry, setIndustry] = useState('SaaS');
   const [meetingFrequency, setMeetingFrequency] = useState('medium');
-  const [searchFrequency, setSearchFrequency] = useState(5);
+  const [queryFrequency, setQueryFrequency] = useState(5);
   const [teamType, setTeamType] = useState('mixed');
   const [showDetails, setShowDetails] = useState(false);
   const [animatedMonthly, setAnimatedMonthly] = useState(0);
@@ -86,14 +86,14 @@ export default function CoworkerROICalculator() {
   };
 
   const getDailyInteractions = () => {
-    // searchFrequency is now a direct number from slider (1-15)
-    const searches = searchFrequency;
+    // queryFrequency is now a direct number from slider (1-15)
+    const queries = queryFrequency;
     
     // Meeting frequency adds additional interactions
     const meetings = meetingFrequency === 'low' ? 0.3 : 
                      meetingFrequency === 'medium' ? 0.5 : 0.8;
     
-    return searches + meetings;
+    return queries + meetings;
   };
 
   const hourlyRate = industryRates[industry];
@@ -213,7 +213,7 @@ export default function CoworkerROICalculator() {
               <div>
                 <label className="flex items-center text-sm font-medium text-slate-700 mb-2">
                   Primary team type
-                  <Tooltip text="Different teams have different work patterns. Engineering teams typically spend more time on technical searches and documentation, while sales teams focus on customer information. This affects the average time saved per interaction." />
+                  <Tooltip text="Different teams have different work patterns. Engineering teams typically spend more time on technical queries and documentation, while sales teams focus on customer information. This affects the average time saved per interaction." />
                 </label>
                 <select
                   value={teamType}
@@ -229,20 +229,20 @@ export default function CoworkerROICalculator() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">How many AI searches per day</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">How many AI queries per day</label>
                 <div className="flex items-center gap-3">
                   <input
                     type="range"
                     min="1"
                     max="15"
-                    value={searchFrequency}
-                    onChange={(e) => setSearchFrequency(Number(e.target.value))}
+                    value={queryFrequency}
+                    onChange={(e) => setQueryFrequency(Number(e.target.value))}
                     className="flex-1 h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-emerald-500"
                     style={{
-                      background: `linear-gradient(to right, #2DD4A3 0%, #2DD4A3 ${((searchFrequency - 1) / 14) * 100}%, #e2e8f0 ${((searchFrequency - 1) / 14) * 100}%, #e2e8f0 100%)`
+                      background: `linear-gradient(to right, #2DD4A3 0%, #2DD4A3 ${((queryFrequency - 1) / 14) * 100}%, #e2e8f0 ${((queryFrequency - 1) / 14) * 100}%, #e2e8f0 100%)`
                     }}
                   />
-                  <span className="text-lg font-semibold text-slate-900 min-w-[50px] text-right">{searchFrequency}</span>
+                  <span className="text-lg font-semibold text-slate-900 min-w-[50px] text-right">{queryFrequency}</span>
                 </div>
                 <p className="text-xs text-slate-500 mt-1">Primary driver of ROI calculation</p>
               </div>
@@ -250,7 +250,7 @@ export default function CoworkerROICalculator() {
               <div>
                 <label className="flex items-center text-sm font-medium text-slate-700 mb-2">
                   Connectors ({numApps} selected)
-                  <Tooltip text="More connected apps means Coworker can search across more of your company's knowledge. Each connector beyond 3 adds a 3% boost to time saved per interaction because employees spend less time switching between apps and can find information faster in one place." />
+                  <Tooltip text="More connected apps means Coworker can query across more of your company's knowledge. Each connector beyond 3 adds a 3% boost to time saved per interaction because employees spend less time switching between apps and can find information faster in one place." />
                 </label>
                 <div className="border border-slate-200 rounded-lg p-3 bg-white">
                   <div className="grid grid-cols-2 gap-2">
@@ -405,7 +405,7 @@ export default function CoworkerROICalculator() {
                   <p><strong>Active Users:</strong> {employeeCount} employees = {activeUsers} users</p>
                   
                   <p className="pt-2"><strong>Daily Interactions:</strong> {dailyInteractions.toFixed(1)} per user/day</p>
-                  <p className="text-xs text-slate-500">({searchFrequency} AI searches + {(dailyInteractions - searchFrequency).toFixed(1)} meeting-related interactions)</p>
+                  <p className="text-xs text-slate-500">({queryFrequency} AI queries + {(dailyInteractions - queryFrequency).toFixed(1)} meeting-related interactions)</p>
                   
                   <p className="pt-2"><strong>Monthly Interactions:</strong> {activeUsers} users × {dailyInteractions.toFixed(1)} interactions × 22 workdays = {formatNumber(monthlyInteractions)}</p>
                   
