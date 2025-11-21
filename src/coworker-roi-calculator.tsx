@@ -153,15 +153,6 @@ export default function CoworkerROICalculator() {
     <div className="min-h-screen p-2 sm:p-4" style={{ backgroundColor: '#F7F6F7' }}>
       <div className="max-w-7xl mx-auto space-y-3 sm:space-y-4">
         
-        <div className="text-center mb-3 sm:mb-4">
-          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2">
-            <img src="/logo.svg" alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16" />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900">
-              ROI Calculator
-            </h1>
-          </div>
-          <p className="text-sm sm:text-base md:text-lg text-slate-600 px-2">Based on customer implementation data</p>
-        </div>
 
         {/* Two-column layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
