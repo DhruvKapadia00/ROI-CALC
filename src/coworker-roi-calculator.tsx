@@ -36,7 +36,7 @@ export default function CoworkerROICalculator() {
   const [meetingFrequency, setMeetingFrequency] = useState('medium');
   const [queryFrequency, setQueryFrequency] = useState(5);
   const [teamType, setTeamType] = useState('mixed');
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const [animatedMonthly, setAnimatedMonthly] = useState(0);
 
   const connectors = [
